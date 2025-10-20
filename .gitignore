@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/employee-management.ui/public
+/EmployeeManagement/.vs
+/EmployeeManagement.API/bin/Debug
+/EmployeeManagement.API/obj
