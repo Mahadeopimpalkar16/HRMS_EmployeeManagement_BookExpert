@@ -28,7 +28,7 @@ namespace EmployeeManagement.API.Controllers
             var employeeExists = await _repo.GetEmployeeByEmail(user.Username);
             
             if (employeeExists == null)
-                return BadRequest("Email not found in employee records.");
+                return BadRequest("Email not found in employee records. Check with admin to add employee record first.");
 
             // Check if user already registered
             if (await _db.Users.AnyAsync(u => u.Username == user.Username))

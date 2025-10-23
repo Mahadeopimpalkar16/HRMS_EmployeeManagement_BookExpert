@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { login, register } from "../../services/auth.service";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 
 const Login: React.FC = () => {
   const [form, setForm] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
 
@@ -16,7 +17,6 @@ const Login: React.FC = () => {
     }
   }, [navigate]);
 
-  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -26,21 +26,35 @@ const Login: React.FC = () => {
     const { username, password } = form;
 
     if (!username || !password) {
-      setError("Please enter both username and password");
+      setMessage("Please enter both username and password");
+      setIsError(true);
       return;
     }
 
     try {
       const res = await login({ username, passwordHash: password });
-      localStorage.setItem("employeeId", res.employeeId.toString());
-      localStorage.setItem("username", res.username);
-      localStorage.setItem("role", res.role);
-      localStorage.setItem("access", res.access);
-      navigate("/");
+
+      // ✅ Show API success response
+      setMessage("✅ Login successful!");
+      setIsError(false);
+
+      localStorage.setItem("employeeId", res.employeeId?.toString() || "");
+      localStorage.setItem("username", res.username || "");
+      localStorage.setItem("role", res.role || "");
+      localStorage.setItem("access", res.access || "");
+
+      // navigate after short delay so user sees message
+      setTimeout(() => navigate("/"), 1000);
     } catch (err: any) {
-      const message =
-        err?.response?.data?.error || err?.message || "Something went wrong";
-      setError(message);
+      // ✅ Show only API message like "Invalid credentials"
+      const apiMessage =
+        err?.response?.data?.message || // if API uses "message"
+        err?.response?.data?.error || // if API uses "error"
+        err?.response?.data || // if plain text
+        "Something went wrong";
+
+      setMessage(apiMessage);
+      setIsError(true);
     }
   };
 
@@ -49,28 +63,33 @@ const Login: React.FC = () => {
     const { username, password } = form;
 
     if (!username || !password) {
-      setError("Please fill all fields");
+      setMessage("Please fill all fields");
+      setIsError(true);
       return;
     }
 
     try {
-      await register({ username, passwordHash: password });
-      setError("");
+      const res = await register({ username, passwordHash: password });
+      setMessage("✅ Registration successful! Please log in.");
+      setIsError(false);
       setIsRegistering(false);
-      alert("Registration successful! Please log in.");
     } catch (err: any) {
-      const message =
-        err?.response?.data?.error || err?.message || "Something went wrong";
-      setError(message);
+      const apiMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.response?.data ||
+        "Something went wrong";
+
+      setMessage(apiMessage);
+      setIsError(true);
     }
   };
 
-  // Submit handler (works for Enter key)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setMessage("");
     isRegistering ? handleRegister() : handleLogin();
   };
-
   return (
     <div className="dialog-container">
       <div className="dialog-box">
@@ -86,18 +105,23 @@ const Login: React.FC = () => {
             margin="normal"
           />
 
-
           <TextField
             name="password"
-            label="password"
-            placeholder="Password"
+            label="Password"
+            type="password"
             value={form.password}
             onChange={handleChange}
             fullWidth
             margin="normal"
           />
 
-          <Button type="submit">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
             {isRegistering ? "Register" : "Login"}
           </Button>
         </form>
@@ -114,8 +138,21 @@ const Login: React.FC = () => {
             {isRegistering ? "Login here" : "Register here"}
           </span>
         </p>
+        {message && (
+          <Typography
+            variant="body2"
+            color="error"
+            sx={{
+              mt: 1,
+              textAlign: "center",
+              whiteSpace: "pre-line", // keeps multi-line spacing
+              lineHeight: 1.5,        // adds vertical spacing
+            }}
+          >
+            {message}
+          </Typography>
+        )}
 
-        {error && <p className="error">{error}</p>}
       </div>
     </div>
   );
