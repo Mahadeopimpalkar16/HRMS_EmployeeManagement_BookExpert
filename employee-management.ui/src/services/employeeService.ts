@@ -3,7 +3,6 @@ import type { Employee } from "../types/employee";
 
 const apiBase = "https://localhost:7264/api/Employees";
 
-// 🧾 Employee CRUD
 export const fetchEmployees = async (): Promise<Employee[]> => {
   const res = await axios.get(`${apiBase}/GetAllEmployees`);
   return res.data || res.data;

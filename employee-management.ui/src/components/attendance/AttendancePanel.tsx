@@ -33,36 +33,9 @@ const AttendancePanel: React.FC<{ employeeId: number }> = ({ employeeId }) => {
       }
     };
 
-
     fetchStatus();
   }, [employeeId]);
 
-  // useEffect(() => {
-  //   let timer: number;
-
-  //   if (checkInTime) {
-
-  //     timer = window.setInterval(() => {
-  //       const now = new Date();
-
-  //       const diffMs = new Date(now.getTime() - checkInTime.getTime());
-  //       const diff = new Date(diffMs);
-  //       const hh = String(diff.getUTCHours()).padStart(2, "0");
-  //       const mm = String(diff.getUTCMinutes()).padStart(2, "0");
-  //       const ss = String(diff.getUTCSeconds()).padStart(2, "0");
-  //       const  liveElapsed = `${hh}:${mm}:${ss}`;
-  //       setElapsed(liveElapsed);
-
-  //       if(status === "Checked In"){
-  //         setTotalTime(totalTime + liveElapsed);
-  //       }else{
-  //         setTotalTime(totalTime);
-  //       }
-  //     }, 1000);
-  //   }
-
-  //   return () => clearInterval(timer);
-  // }, [checkInTime, status]);
 
 useEffect(() => {
   let timer: number;

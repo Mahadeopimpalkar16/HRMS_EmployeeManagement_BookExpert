@@ -71,7 +71,12 @@ const AttendanceDetails = () => {
                 </Button>
             </Box>
 
-            <Box mt={2}>
+            <Box mt={2}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+            >
                 <Typography variant="h6" gutterBottom>
                     Weekly Attendance Summary
                 </Typography>

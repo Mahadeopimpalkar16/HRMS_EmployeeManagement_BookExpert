@@ -33,7 +33,7 @@
 }
 
 .switch-text {
-  margin-top: 10px;
+  margin-top: 20px;
   font-size: 13px;
 }
 
@@ -45,5 +45,5 @@
 
 .error {
   color: red;
-  margin-top: 10px;
+  margin-top: 20px;
 }

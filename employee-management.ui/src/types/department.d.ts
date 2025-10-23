@@ -1,7 +1,7 @@
 export interface Department{
     deptId: number;
     deptName: string;
-    designations: Designation[]; // ✅ object
+    designations: Designation[];
 }
 
 export interface Designation {

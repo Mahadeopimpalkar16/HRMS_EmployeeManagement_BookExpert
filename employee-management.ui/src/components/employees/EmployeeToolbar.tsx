@@ -43,46 +43,6 @@ const EmployeeToolbar: React.FC<Props> = ({
           Delete Selected
         </Button>
       </Box>
-
-      {/* <Box display="flex" alignItems="center" gap={1} ml="auto">
-        <Tooltip title="View Charts">
-          <IconButton onClick={setShowChart} color="primary">
-            <InsertChartIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Download PDF">
-          <IconButton onClick={() => onDownloadPdf(searchValue)} color="secondary">
-            <PictureAsPdfIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Download Excel">
-          <IconButton onClick={() => onDownloadExcel(searchValue)} color="success">
-            <GridOnIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="View Report">
-          <IconButton onClick={onViewReport} color="warning">
-            <DescriptionIcon />
-          </IconButton>
-        </Tooltip>
-
-        <TextField
-          placeholder="Search by name"
-          value={searchValue}
-          onChange={(e) => onSearchChange(e.target.value)}
-          size="small"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box> */}
     </Box>
   );
 };

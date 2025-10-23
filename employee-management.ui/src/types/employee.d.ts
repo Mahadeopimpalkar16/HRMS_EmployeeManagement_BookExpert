@@ -12,10 +12,10 @@ export interface Employee {
   email: string;
 
   deptId: number;
-  department: Department; // ✅ object
+  department: Department; 
 
   designationId: number;
-  designation: Designation; // ✅ object
+  designation: Designation; 
 }
 
 export interface CreateEmployee {

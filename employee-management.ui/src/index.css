@@ -83,3 +83,7 @@ button:focus-visible {
     color: #213547;
   }
 }
+html {
+  zoom: 0.7; /* Zoom out to 70% */
+}
+

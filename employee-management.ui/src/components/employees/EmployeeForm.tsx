@@ -39,7 +39,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ show, onHide, onSubmit, emp
   const [age, setAge] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isReadOnly, setIsReadOnly] = useState(false);
-  const [isEmailExists, setIsEmailExists] = useState(false);
 
   // Check access rights
   useEffect(() => {
@@ -141,7 +140,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ show, onHide, onSubmit, emp
     if (!form.state) newErrors.state = "State is required.";
     if (!form.dateOfBirth) newErrors.dateOfBirth = "Date of Birth is required.";
     if (!form.email) newErrors.email = "Email is required.";
-    if(isEmailExists) newErrors.email = "Email already exists."
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
