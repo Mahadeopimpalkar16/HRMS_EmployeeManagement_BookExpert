@@ -7,19 +7,19 @@ import {
   addEmployee,
   updateEmployee,
 } from "../../services/employeeService";
-import { downloadEmployeeReport } from "../../services/newReportService";
+import { downloadEmployeeReport } from "../../services/reportService";
 
-import EmployeeList from "./EmployeeManagement.List";
-import EmployeeForm from "./EmployeeManagement.CreateEmpForm";
-import EmployeeToolbar from "./EmployeeManagement.Toolbar";
+import EmployeeList from "./EmployeeList";
+import EmployeeForm from "./EmployeeForm";
+import EmployeeToolbar from "./EmployeeToolbar";
 
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
-import type { CreateEmployee, Employee } from "../../types/employee";
+import type { Employee } from "../../types/employee";
 import AttendancePanel from "../attendance/AttendancePanel";
 import DashboardToolbar from "../toolbar/DashboardToolbar";
 import { Box } from "@mui/material";
-import EmpReportDialog from "./EmployeeManagement.ReportDialog";
-import EmployeeChartDialog from "./EmployeeManagement.ChartDialog";
+import EmpReportDialog from "./EmpReportDialog";
+import EmployeeChartDialog from "./EmployeeChartDialog";
 
 const EmployeeManagement: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -36,7 +36,7 @@ const EmployeeManagement: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      setEmployees(await fetchEmployees());
+      const emp = setEmployees(await fetchEmployees());
       setStates(await fetchStates());
     };
     loadData();
@@ -86,13 +86,11 @@ const EmployeeManagement: React.FC = () => {
 
   const handleSelectAll = (ids: number[]) => setSelectedIds(ids);
 
-  const handleViewReport = () => setShowReportDialog(true);
-
   return (
     <div className="container mt-4" style={{ overflow: "visible", width: "100%" }} >
       <h2 style={{ textAlign: "center" }}>Employees Managemant</h2>
 
-      <AttendancePanel employeeId={45} />
+      <AttendancePanel employeeId={Number(localStorage.getItem("employeeId"))} />
       <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" mb={1} gap={2}>
         <EmployeeToolbar
           onAdd={handleAdd}
@@ -106,7 +104,7 @@ const EmployeeManagement: React.FC = () => {
           onDownloadPdf={downloadEmployeeReport.pdf}
           onDownloadExcel={downloadEmployeeReport.excel}
           onShowChart={() => setShowChartDialog(true)}
-          onViewReport={handleViewReport}
+          onViewReport={() => setShowReportDialog(true)}
         />
       </Box>
 

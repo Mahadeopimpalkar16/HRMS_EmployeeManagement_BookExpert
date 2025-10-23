@@ -11,7 +11,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import PieChartIcon from "@mui/icons-material/PieChart";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
-import EmployeeChart from "./EmployeeManagement.Charts";
+import EmployeeChart from "./EmployeeChart";
 import type{ Employee } from "../../types/employee";
 
 interface Props {

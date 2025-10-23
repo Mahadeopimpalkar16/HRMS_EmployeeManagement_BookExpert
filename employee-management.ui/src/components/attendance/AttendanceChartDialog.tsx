@@ -12,7 +12,7 @@ import PieChartIcon from "@mui/icons-material/PieChart";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import AttendanceChart from "./AttendanceChart";
-import type { AttendanceSummary } from "./types";
+import type { AttendanceSummary } from "../../types/attendance";
 
 interface Props {
   open: boolean;

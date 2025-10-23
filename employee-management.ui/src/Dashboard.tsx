@@ -1,7 +1,8 @@
 import { Tabs, Tab, Box } from "@mui/material";
 import { useState } from "react";
-import EmployeeManagement from "./components/employees/EmployeeManagement";
 import AttendanceTabs from "./components/attendance/AttendanceTabs";
+import EmployeeManagementTab from "./components/employees/EmployeeManagementTab";
+import EmployeeManagement from "./components/employees/EmployeeManagement";
 
 const Dashboard: React.FC = () => {
   const [tab, setTab] = useState(0);

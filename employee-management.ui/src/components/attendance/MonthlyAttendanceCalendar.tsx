@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Tooltip, Typography, Paper } from "@mui/material";
 import { startOfMonth, endOfMonth, eachDayOfInterval, format } from "date-fns";
-import type { DailyAttendance } from "./types";
+import type { DailyAttendance } from "../../types/attendance";
 
 interface Props {
   data: DailyAttendance[];

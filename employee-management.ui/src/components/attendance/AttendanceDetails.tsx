@@ -16,7 +16,7 @@ import {
 import WeeklyProgressBar from "./WeeklyProgressBar";
 import { useParams, useNavigate } from "react-router-dom";
 import { AttendanceService } from "../../services/attendanceService";
-import type { DailyAttendance } from "./types";
+import type { DailyAttendance } from "../../types/attendance";
 import MonthlyAttendanceCalendar from "./MonthlyAttendanceCalendar";
 
 const recordsPerWeek = 7;

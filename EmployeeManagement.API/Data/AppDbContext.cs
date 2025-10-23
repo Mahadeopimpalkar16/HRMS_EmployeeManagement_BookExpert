@@ -18,27 +18,42 @@ namespace EmployeeManagement.API.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Designation> Designations { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Employee>().ToTable("Employees", t => t.ExcludeFromMigrations());
-            modelBuilder.Entity<States>().ToTable("States", t => t.ExcludeFromMigrations());
-            modelBuilder.Entity<Department>().ToTable("Departments", t => t.ExcludeFromMigrations());
-            modelBuilder.Entity<Designation>().ToTable("Designations", t => t.ExcludeFromMigrations());
-            modelBuilder.Entity<EmployeeAttendance>().ToTable("EmployeeAttendances", t => t.ExcludeFromMigrations());
+            base.OnModelCreating(modelBuilder);
 
+            // Department → Designations (1-to-many)
+            modelBuilder.Entity<Department>()
+                .HasMany(d => d.Designations)
+                .WithOne(ds => ds.Department)
+                .HasForeignKey(ds => ds.DeptId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            // Department → Employees (1-to-many)
+            modelBuilder.Entity<Department>()
+                .HasMany(d => d.Employees)
+                .WithOne(e => e.Department)
+                .HasForeignKey(e => e.DeptId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            // Designation → Employees (1-to-many)
+            modelBuilder.Entity<Designation>()
+                .HasMany(ds => ds.Employees)
+                .WithOne(e => e.Designation)
+                .HasForeignKey(e => e.DesignationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Employees → EmployeeAttendance (1-to-many)
             modelBuilder.Entity<EmployeeAttendance>().HasKey(e => new { e.EmployeeId, e.Date });
             modelBuilder.Entity<EmployeeAttendance>()
                 .HasOne(e => e.Employee)
-                .WithMany()
+                .WithMany(aa => aa.Attendances)
                 .HasForeignKey(e => e.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-
         }
+
     }
-
-
 }

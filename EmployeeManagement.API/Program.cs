@@ -1,7 +1,9 @@
 using EmployeeManagement.API.Data;
+using EmployeeManagement.API.Helpers;
 using EmployeeManagement.API.Repository;
+using EmployeeManagement.API.Services;
 using Microsoft.EntityFrameworkCore;
-
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,13 +15,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ));
 
 
-// Rrepositories
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+
+#region Rrepositories
+//builder.Services.AddScope
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+#endregion
+
+#region Services
+
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+#endregion
+
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(AutoMapperProfiles).Assembly));
+
 
 // CORS policy 
 builder.Services.AddCors(options =>

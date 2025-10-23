@@ -12,16 +12,17 @@ const App: React.FC = () => (
         path="/"
         element={
           <AuthGuard>
-            <Dashboard />
+            <Dashboard/>
           </AuthGuard>
         }
       />
       <Route
         path="/attendance/:employeeId"
         element={
-          <AuthGuard>
-            <AttendanceDetails />
-          </AuthGuard>
+            <AuthGuard>
+              <AttendanceDetails />
+            </AuthGuard>
+          
         }
       />
     </Routes>

@@ -24,22 +24,19 @@ namespace EmployeeManagement.API.Migrations
 
             modelBuilder.Entity("EmployeeManagement.API.Models.Department", b =>
                 {
-                    b.Property<int>("DepartmentId")
+                    b.Property<int>("DeptId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("DepartmentId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("DeptId"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("DeptName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("DepartmentId");
+                    b.HasKey("DeptId");
 
-                    b.ToTable("Departments", null, t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("EmployeeManagement.API.Models.Designation", b =>
@@ -50,16 +47,18 @@ namespace EmployeeManagement.API.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("DesignationId"));
 
-                    b.Property<string>("Title")
+                    b.Property<int>("DeptId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DesignationName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("DesignationId");
 
-                    b.ToTable("Designations", null, t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
+                    b.HasIndex("DeptId");
+
+                    b.ToTable("Designations");
                 });
 
             modelBuilder.Entity("EmployeeManagement.API.Models.Employee", b =>
@@ -76,11 +75,15 @@ namespace EmployeeManagement.API.Migrations
                     b.Property<DateTime>("DateOfJoin")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int>("DeptId")
                         .HasColumnType("int");
 
                     b.Property<int>("DesignationId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -100,14 +103,11 @@ namespace EmployeeManagement.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("DeptId");
 
                     b.HasIndex("DesignationId");
 
-                    b.ToTable("Employees", null, t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("EmployeeManagement.API.Models.EmployeeAttendance", b =>
@@ -133,10 +133,7 @@ namespace EmployeeManagement.API.Migrations
 
                     b.HasKey("EmployeeId", "Date");
 
-                    b.ToTable("EmployeeAttendances", null, t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
+                    b.ToTable("EmployeeAttendances");
                 });
 
             modelBuilder.Entity("EmployeeManagement.API.Models.States", b =>
@@ -157,10 +154,7 @@ namespace EmployeeManagement.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("States", null, t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
+                    b.ToTable("States");
                 });
 
             modelBuilder.Entity("EmployeeManagement.API.Models.User", b =>
@@ -188,18 +182,29 @@ namespace EmployeeManagement.API.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("EmployeeManagement.API.Models.Designation", b =>
+                {
+                    b.HasOne("EmployeeManagement.API.Models.Department", "Department")
+                        .WithMany("Designations")
+                        .HasForeignKey("DeptId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("EmployeeManagement.API.Models.Employee", b =>
                 {
                     b.HasOne("EmployeeManagement.API.Models.Department", "Department")
                         .WithMany("Employees")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("DeptId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EmployeeManagement.API.Models.Designation", "Designation")
                         .WithMany("Employees")
                         .HasForeignKey("DesignationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Department");
@@ -210,7 +215,7 @@ namespace EmployeeManagement.API.Migrations
             modelBuilder.Entity("EmployeeManagement.API.Models.EmployeeAttendance", b =>
                 {
                     b.HasOne("EmployeeManagement.API.Models.Employee", "Employee")
-                        .WithMany()
+                        .WithMany("Attendances")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -220,12 +225,19 @@ namespace EmployeeManagement.API.Migrations
 
             modelBuilder.Entity("EmployeeManagement.API.Models.Department", b =>
                 {
+                    b.Navigation("Designations");
+
                     b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("EmployeeManagement.API.Models.Designation", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("EmployeeManagement.API.Models.Employee", b =>
+                {
+                    b.Navigation("Attendances");
                 });
 #pragma warning restore 612, 618
         }

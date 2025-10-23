@@ -13,7 +13,7 @@ import {
   Line,
   ResponsiveContainer,
 } from "recharts";
-import type { AttendanceSummary } from "./types";
+import type { AttendanceSummary } from "../../types/attendance";
 
 const COLORS = [
   "#0088FE", "#00C49F", "#FFBB28", "#FF8042",

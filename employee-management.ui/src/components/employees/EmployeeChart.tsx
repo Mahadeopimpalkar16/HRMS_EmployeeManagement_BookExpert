@@ -28,10 +28,10 @@ interface Props {
 const EmployeeChart: React.FC<Props> = ({ employees, type = "pie" }) => {
   const data = Object.values(
     employees.reduce((acc, emp) => {
-      if (!acc[emp.designation]) {
-        acc[emp.designation] = { designation: emp.designation, salary: 0 };
+      if (!acc[emp.designation.designationName]) {
+        acc[emp.designation.designationName] = { designation: emp.designation.designationName, salary: 0 };
       }
-      acc[emp.designation].salary += Number(emp.salary) || 0;
+      acc[emp.designation.designationName].salary += Number(emp.salary) || 0;
       return acc;
     }, {} as Record<string, { designation: string; salary: number }>)
   );

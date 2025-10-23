@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
-import AttendanceList from "./AttendanceList";
+import AttendanceManagement from "./attendanceManagement";
 
 const AttendanceTabs = () => {
   return (
     <Box>
-      <AttendanceList />
+      <AttendanceManagement />
     </Box>
   );
 };

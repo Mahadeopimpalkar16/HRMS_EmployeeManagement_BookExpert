@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
 import { login, register } from '../../services/auth.service';
@@ -10,6 +10,12 @@ const Login: React.FC = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (localStorage.getItem('employeeId')) {
+      navigate('/');
+    }
+  }, [navigate]);
+
   const handleLogin = async () => {
     if (!username || !password) {
       setError('Please enter both username and password');
@@ -18,13 +24,23 @@ const Login: React.FC = () => {
 
     try {
       const res = await login({ username, passwordHash: password });
+      console.log(res);
       localStorage.setItem('employeeId', res.employeeId.toString());
-      localStorage.setItem('access', res.access);
+      localStorage.setItem('username', res.username);
       localStorage.setItem('role', res.role);
-      localStorage.setItem('name', res.name);
+      localStorage.setItem('access', res.access);
+
+      console.log("employeeId : " + localStorage.getItem('employeeId'))
+      console.log("username : " + localStorage.getItem('username'))
+      console.log("role : " + localStorage.getItem('role'))
+      console.log("access : " + localStorage.getItem('access'))
+
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.status === 401 ? 'Invalid credentials' : 'Login failed');
+      const message =
+        err?.response?.data?.error || err?.message || 'Something went wrong';
+      setError(message);
+      console.log(message);
     }
   };
 
@@ -40,7 +56,9 @@ const Login: React.FC = () => {
       setIsRegistering(false);
       alert('Registration successful. Please log in.');
     } catch (err: any) {
-      setError('Registration failed');
+      const message =
+        err?.response?.data?.error || err?.message || 'Something went wrong';
+      setError(message);
     }
   };
 

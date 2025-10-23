@@ -3,18 +3,13 @@ using EmployeeManagement.API.Models;
 
 namespace EmployeeManagement.API.Repository
 {
-    public interface IEmployeeRepository
+    public interface IEmployeeRepository : IGenericRepository<Employee>
     {
-        Task<IEnumerable<EmployeeDto>> GetFilteredEmployeesAsync(string searchValue, string searchColumn );
-        Task<EmployeeDto> GetEmployeeByIdAsync(int id);
-        Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync();
-        Task AddEmployeeAsync(EmployeeCreateDto employee);
-        Task UpdateEmployeeAsync(int id, EmployeeCreateDto employee);
-        Task DeleteEmployeeAsync(int id);
-        Task DeleteEmployeesAsync(IEnumerable<int> employeeIds);
-        Task<bool> EmployeeExistsAsync(string name);
-        Task<UserDto> GetEmployeeByEmail(string email);
-
+        Task<IEnumerable<Employee>> GetFilteredAsync(string searchValue, string searchColumn );
+        new Task<Employee?> GetByIdAsync(int id); // Hidden base method.
+        new Task<IEnumerable<Employee>> GetAllAsync();
+        Task BulkDeleteAsync(IEnumerable<int> employeeIds);
+        Task<Employee?> GetEmployeeByEmail(string email);
         Task<IEnumerable<States>> GetAllStates();
         
     }

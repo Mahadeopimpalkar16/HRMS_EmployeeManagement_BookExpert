@@ -14,7 +14,7 @@ namespace EmployeeManagement.API.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<Attendance>> GetEmployeeAttendanceListAsync(string? searchValue = null)
+        public async Task<IEnumerable<AttendanceDTO>> GetEmployeeAttendanceListAsync(string? searchValue = null)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
             var startOfWeek = today.AddDays(-(int)today.DayOfWeek);
@@ -29,17 +29,17 @@ namespace EmployeeManagement.API.Repository
             {
                 query = query.Where(e =>
                     e.Name.Contains(searchValue) ||
-                    e.Designation.Title.Contains(searchValue) ||
-                    e.Department.Name.Contains(searchValue));
+                    e.Designation.DesignationName.Contains(searchValue) ||
+                    e.Department.DeptName.Contains(searchValue));
             }
 
             var attendanceSummary = await query
-                .Select(e => new Attendance
+                .Select(e => new AttendanceDTO
                 {
                     EmployeeId = e.Id,
                     Name = e.Name,
-                    Designation = e.Designation.Title,
-                    Department = e.Department.Name,
+                    Designation = e.Designation.DesignationName,
+                    Department = e.Department.DeptName,
                     DayStatus = _context.EmployeeAttendances
                         .Where(a => a.EmployeeId == e.Id && a.Date == today)
                         .Select(a => a.Status)

@@ -50,7 +50,7 @@ namespace EmployeeManagement.API.Controllers
         [HttpGet("EmployeeReport/{format}")]
         public async Task<IActionResult> GenerateEmployeeReport(string format, [FromQuery] string? searchValue)
         {
-            var employees = await _employeeRepo.GetFilteredEmployeesAsync(searchValue, "Name");
+            var employees = await _employeeRepo.GetFilteredAsync(searchValue, "Name");
             var sorted = employees.OrderByDescending(e => e.DateOfJoin).ToList();
 
             return GenerateReport(

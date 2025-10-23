@@ -17,7 +17,7 @@ namespace EmployeeManagement.API.Controllers
         private IActionResult GenerateReport(string? searchValue, string format, string fileName, string mimeType)
         {
             var employees = _employeeRepo
-                .GetFilteredEmployeesAsync(searchValue, "Name")
+                .GetFilteredAsync(searchValue, "Name")
                 .Result
                 .OrderByDescending(e => e.DateOfJoin)
                 .ToList();

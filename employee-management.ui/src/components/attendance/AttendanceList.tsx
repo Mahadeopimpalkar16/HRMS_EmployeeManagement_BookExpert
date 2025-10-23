@@ -6,35 +6,28 @@ import {
     TableBody,
     Box,
     Pagination,
-    DialogTitle,
-    DialogContent,
 } from "@mui/material";
 import WeeklyProgressBar from "./WeeklyProgressBar";
-import type { AttendanceSummary, DailyAttendance } from "./types";
+import type { AttendanceSummary } from "../../types/attendance";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { AttendanceService } from '../../services/attendanceService';
-import DashboardToolbar from "../toolbar/DashboardToolbar";
-import { downloadAttendanceReport } from "../../services/newReportService";
-import AttendanceChart from "./AttendanceChart";
-import AttendanceChartDialog from "./AttendanceChartDialog";
-import AttendanceStatusChart from "./MonthlyAttendanceCalendar";
+interface Props{
+    attendanceData: AttendanceSummary[];
+}
 
-
-const AttendanceList = () => {
+const AttendanceList : React.FC<Props>= ({
+    attendanceData,
+}) => {
     const navigate = useNavigate();
     const [data, setData] = useState<AttendanceSummary[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchValue, setSearchValue] = useState("");
 
-    const [showChartDialog, setShowChartDialog] = useState(false);
-    const [showReportDialog, setShowReportDialog] = useState(false);
-  const [chartData, setChartData] = useState<DailyAttendance[]>([]);
-
-    const filteredData = data.filter(emp =>
-        emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        emp.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        emp.department.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredData = attendanceData.filter(emp =>
+        emp.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        emp.designation.toLowerCase().includes(searchValue.toLowerCase()) ||
+        emp.department.toLowerCase().includes(searchValue.toLowerCase())
     );
 
     const recordsPerPage = 10;
@@ -52,17 +45,6 @@ const AttendanceList = () => {
     }, []);
     return (
         <Box>
-            <h2 style={{ textAlign: "center" }}>Daily Attendance List</h2>
-            <DashboardToolbar
-                searchValue={searchQuery}
-                onSearchChange={setSearchQuery}
-                onDownloadPdf={downloadAttendanceReport.pdf}
-                onDownloadExcel={downloadAttendanceReport.excel}
-                onShowChart={() => setShowChartDialog(true)}
-                onViewReport={() => setShowReportDialog(true)}
-
-            />
-
             <Table>
                 <TableHead>
                     <TableRow>
@@ -94,16 +76,11 @@ const AttendanceList = () => {
             </Table>
             <Box mt={2} display="flex" justifyContent="center">
                 <Pagination
-                    count={totalPages} // You can calculate this dynamically later
+                    count={totalPages}
                     page={currentPage}
                     onChange={(_, val) => setCurrentPage(val)}
                 />
             </Box>
-            <AttendanceChartDialog
-                open={showChartDialog}
-                onClose={() => setShowChartDialog(false)}
-                attendanceData={filteredData}
-            />
         </Box>
     );
 };

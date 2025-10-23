@@ -2,110 +2,108 @@
 using EmployeeManagement.API.Dtos;
 using EmployeeManagement.API.Models;
 using EmployeeManagement.API.Repository;
+using EmployeeManagement.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagement.API.Controllers
 {
+    [Route("api/[controller]/[action]/")]
     [ApiController]
-    [Route("api/[controller]")]
-    public class EmployeeController : ControllerBase
+    public class EmployeesController : ControllerBase
     {
-        private readonly IEmployeeRepository _repo;
-        private readonly AppDbContext _context; 
-        public EmployeeController(IEmployeeRepository repo, AppDbContext context)
+        private readonly AppDbContext _context;
+        private readonly IEmployeeService _service;
+        public EmployeesController(AppDbContext context, IEmployeeService service)
         {
-            _repo = repo;
             _context = context;
+            _service = service;
         }
 
-        // Used in API level searching
-        [HttpGet("[action]")]
-        public async Task<IActionResult> SearchDataBySearchParameter([FromQuery] string? searchValue, [FromQuery] string searchColumn = "Name" )
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetAllEmployees()
         {
-            var employees = await _repo.GetFilteredEmployeesAsync(searchValue, searchColumn);
-            employees.OrderByDescending(o => o.DateOfJoin);
+            var employees = await _service.GetAllAsync();
             return Ok(employees);
         }
 
-        [HttpGet("[action]")]
-        public async Task<IActionResult> GetAllEmployees()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<EmployeeDTO>> GetEmployeeById(int id)
         {
-            var employees = await _repo.GetAllEmployeesAsync();
-            var result = employees.OrderByDescending(o => o.DateOfJoin).ToList();
-            return Ok(result);
-        }
-        [HttpGet("[action]/{id}")]
-        public async Task<IActionResult> GetEmployee(int id)
-        {
-            var employee = await _repo.GetEmployeeByIdAsync(id);
+            var employee = await _service.GetByIdAsync(id);
             if (employee == null) return NotFound();
+
             return Ok(employee);
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> AddEmployee([FromBody] EmployeeCreateDto employee)
+        [HttpPost]
+        public async Task<ActionResult<EmployeeDTO>> CreateEmployee(CreateEmployeeDTO dto)
         {
-            if (await _repo.EmployeeExistsAsync(employee.Name))
-                return BadRequest("Duplicate record found.");
+            var isEmailExists = await _service.GetByEmailAsync(dto.Email);
+            if (isEmailExists != null)
+                return BadRequest("Email is already exists!.");
 
-            await _repo.AddEmployeeAsync(employee);
-            return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
+            var employee = await _service.CreateAsync(dto);
+            //return Ok(employee);
+            return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.Id }, employee);
         }
 
-        [HttpPut("[action]/{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeCreateDto employee)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEmployee(int id, CreateEmployeeDTO dto)
         {
-            if (id != employee.Id) return BadRequest();
-            await _repo.UpdateEmployeeAsync(id, employee);
-            return Ok("Updated Successfully");
+            var employee = await _service.UpdateAsync(id, dto);
+            return Ok();
         }
 
-        [HttpDelete("[action]/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            await _repo.DeleteEmployeeAsync(id);
-            return Ok("Deleted Successfully");
+            var employee = await _service.GetByIdAsync(id);
+            if (employee == null) return NotFound();
+
+            await _service.DeleteAsync(id);
+            return Ok();
         }
 
-        [HttpDelete("[action]")]
+        [HttpDelete()]
         public async Task<IActionResult> DeleteMultiple([FromBody] List<int> employeeIds)
         {
-            await _repo.DeleteEmployeesAsync(employeeIds);
+            await _service.BulkDeleteAsync(employeeIds);
             return Ok("Deleted Successfully");
         }
 
-        [HttpGet("[action]")]
+        [HttpGet()]
         public async Task<IActionResult> GetAllStates()
         {
-            var result = await _repo.GetAllStates();
+            var result = await _service.GetAllStates();
             return Ok(result);
         }
 
-        [HttpGet("[action]")]
+        [HttpGet("{email}")]
         public async Task<IActionResult> GetEmployeeByEmail(string email)
         {
-            var employee = await _repo.GetEmployeeByEmail(email);
+            var employee = await _service.GetByEmailAsync(email);
             if (employee == null) return NotFound();
             return Ok(employee);
         }
 
-        [HttpGet("[action]")]
+        // will update this service and repo layer as we grow up.
+        [HttpGet]
         public async Task<IActionResult> GetDepartments()
         {
             var departments = await _context.Departments
-                .Select(d => new { d.DepartmentId, d.Name })
+                .Select(d => new { d.DeptId, d.DeptName })
                 .ToListAsync();
 
             return Ok(departments);
         }
 
-        [HttpGet("[action]/{departmentId}")]
-        public async Task<IActionResult> GetDesignationsByDepartment(int departmentId)
+        [HttpGet("{departmentId}")]
+        public async Task<IActionResult> GetDesignationsByDeptId(int departmentId)
         {
             var designations = await _context.Designations
-                .Where(d => d.DepartmentId == departmentId)
-                .Select(d => new { d.DesignationId, d.Title })
+                .Where(d => d.DeptId == departmentId)
+                .Select(d => new { d.DesignationId, d.DesignationName })
                 .ToListAsync();
 
             return Ok(designations);

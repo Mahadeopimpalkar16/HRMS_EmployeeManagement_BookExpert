@@ -4,6 +4,6 @@ namespace EmployeeManagement.API.Repository
 {
     public interface IAttendanceRepository
     {
-        Task<IEnumerable<Attendance>> GetEmployeeAttendanceListAsync(string? searchValue);
+        Task<IEnumerable<AttendanceDTO>> GetEmployeeAttendanceListAsync(string? searchValue);
     }
 }

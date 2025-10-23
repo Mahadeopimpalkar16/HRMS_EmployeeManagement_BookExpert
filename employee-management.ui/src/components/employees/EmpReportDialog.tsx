@@ -11,7 +11,7 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
-import type{ Employee } from "../../types/employee";
+import type { Employee } from "../../types/employee";
 
 interface Props {
   open: boolean;
@@ -27,17 +27,17 @@ const EmpReportDialog: React.FC<Props> = ({ open, onClose, employees }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Designation</TableCell>
-              <TableCell>Salary</TableCell>
-              <TableCell>Date Of Join</TableCell>
+              <TableCell><strong>Name</strong></TableCell>
+              <TableCell><strong>Designation</strong></TableCell>
+              <TableCell><strong>Salary</strong></TableCell>
+              <TableCell><strong>Date Of Join</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {employees.map((e) => (
               <TableRow key={e.id}>
                 <TableCell>{e.name}</TableCell>
-                <TableCell>{e.designation}</TableCell>
+                <TableCell>{e.designation.designationName}</TableCell>
                 <TableCell>{e.salary}</TableCell>
                 <TableCell>{new Date(e.dateOfJoin).toLocaleDateString()}</TableCell>
               </TableRow>

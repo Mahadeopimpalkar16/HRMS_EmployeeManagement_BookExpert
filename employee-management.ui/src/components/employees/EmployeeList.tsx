@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@mui/material";
 import { DataGrid, type GridColDef, type GridRowSelectionModel } from "@mui/x-data-grid";
-import type { CreateEmployee, Employee } from "../../types/employee";
+import type { Employee } from "../../types/employee";
 
 interface Props {
   employees: Employee[];
@@ -31,7 +31,7 @@ const EmployeeList: React.FC<Props> = ({
       field: "name",
       headerName: "Name",
       flex: 1,
-      renderCell: (params) => (
+      renderCell: (params ) => (
         <span
           style={{ cursor: "pointer", color: "blue" }}
           onClick={(e) => {
@@ -43,7 +43,14 @@ const EmployeeList: React.FC<Props> = ({
         </span>
       ),
     },
-    { field: "designation", headerName: "Designation", flex: 1 },
+    {
+      field: "designation", 
+      headerName: "Designation", 
+      flex: 1,
+      renderCell:(params) => (
+        <span>{params.value.designationName ?? ""}</span>
+      )
+    },
     {
       field: "dateOfJoin",
       headerName: "Date Of Join",
@@ -76,7 +83,7 @@ const EmployeeList: React.FC<Props> = ({
           size="small"
           onClick={() => onDelete(params.row.id)}
           disabled={localStorage.getItem("access") == "read" ||
-            rowDeleteDisabled }
+            rowDeleteDisabled}
 
         >
           Delete
@@ -91,6 +98,7 @@ const EmployeeList: React.FC<Props> = ({
   const rows = employees.map((e, index) => ({
     ...e,
     id: e.id ?? index,
+
   }));
 
   // Pagination
@@ -145,7 +153,7 @@ const EmployeeList: React.FC<Props> = ({
           marginTop: "10px",
         }}
       >
-        {/* <strong>Total Salary: ₹ {totalSalaryCurrentPage}</strong> */}
+        <strong>Total Salary: ₹ {totalSalaryCurrentPage}</strong>
       </div>
     </div>
   );

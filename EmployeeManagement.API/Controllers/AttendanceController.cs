@@ -207,7 +207,7 @@ namespace EmployeeManagement.API.Controllers
         }
 
         [HttpGet("attendance-list")]
-        public async Task<IEnumerable<Attendance>> GetEmployeeAttendanceListAsync()
+        public async Task<IEnumerable<AttendanceDTO>> GetEmployeeAttendanceListAsync()
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
             var startOfWeek = today.AddDays(-(int)today.DayOfWeek);
@@ -216,12 +216,12 @@ namespace EmployeeManagement.API.Controllers
             var attendanceSummary = await _context.Employees
                 .Include(e => e.Department)
                 .Include(e => e.Designation)
-                .Select(e => new Attendance
+                .Select(e => new AttendanceDTO
                 {
                     EmployeeId = e.Id,
                     Name = e.Name,
-                    Designation = e.Designation.Title,
-                    Department = e.Department.Name,
+                    Designation = e.Designation.DesignationName,
+                    Department = e.Department.DeptName,
                     DayStatus = _context.EmployeeAttendances
                         .Where(a => a.EmployeeId == e.Id && a.Date == today)
                         .Select(a => a.Status)

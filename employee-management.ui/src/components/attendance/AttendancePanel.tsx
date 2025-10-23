@@ -10,7 +10,7 @@ const AttendancePanel: React.FC<{ employeeId: number }> = ({ employeeId }) => {
   const [elapsed, setElapsed] = useState("00:00:00");
   const [loading, setLoading] = useState(false);
   const [totalTime, setTotalTime] = useState("00:00:00");
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -37,22 +37,62 @@ const AttendancePanel: React.FC<{ employeeId: number }> = ({ employeeId }) => {
     fetchStatus();
   }, [employeeId]);
 
-  useEffect(() => {
-    let timer: number;
+  // useEffect(() => {
+  //   let timer: number;
 
-    if (checkInTime) {
-      timer = window.setInterval(() => {
-        const now = new Date();
-        const diff = new Date(now.getTime() - checkInTime.getTime());
-        const hh = String(diff.getUTCHours()).padStart(2, "0");
-        const mm = String(diff.getUTCMinutes()).padStart(2, "0");
-        const ss = String(diff.getUTCSeconds()).padStart(2, "0");
-        setElapsed(`${hh}:${mm}:${ss}`);
-      }, 1000);
-    }
+  //   if (checkInTime) {
 
-    return () => clearInterval(timer);
-  }, [checkInTime]);
+  //     timer = window.setInterval(() => {
+  //       const now = new Date();
+
+  //       const diffMs = new Date(now.getTime() - checkInTime.getTime());
+  //       const diff = new Date(diffMs);
+  //       const hh = String(diff.getUTCHours()).padStart(2, "0");
+  //       const mm = String(diff.getUTCMinutes()).padStart(2, "0");
+  //       const ss = String(diff.getUTCSeconds()).padStart(2, "0");
+  //       const  liveElapsed = `${hh}:${mm}:${ss}`;
+  //       setElapsed(liveElapsed);
+
+  //       if(status === "Checked In"){
+  //         setTotalTime(totalTime + liveElapsed);
+  //       }else{
+  //         setTotalTime(totalTime);
+  //       }
+  //     }, 1000);
+  //   }
+
+  //   return () => clearInterval(timer);
+  // }, [checkInTime, status]);
+
+useEffect(() => {
+  let timer: number;
+
+  const toSeconds = (time: string) => {
+    const [hh, mm, ss] = time.split(":").map(Number);
+    return hh * 3600 + mm * 60 + ss;
+  };
+
+  const formatTime = (seconds: number) => {
+    const hh = String(Math.floor(seconds / 3600)).padStart(2, "0");
+    const mm = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+    const ss = String(seconds % 60).padStart(2, "0");
+    return `${hh}:${mm}:${ss}`;
+  };
+
+  if (checkInTime) {
+    const baseTotalSec = toSeconds(totalTime); // API-provided total time in seconds
+    timer = window.setInterval(() => {
+      const now = new Date();
+      const elapsedSec = Math.floor((now.getTime() - checkInTime.getTime()) / 1000);
+      setElapsed(formatTime(elapsedSec));
+
+      // Show total time = API total + live elapsed
+      setTotalTime(formatTime(baseTotalSec + elapsedSec));
+    }, 1000);
+  }
+
+  return () => clearInterval(timer);
+}, [checkInTime]);
 
   const handleCheckIn = async () => {
     setLoading(true);

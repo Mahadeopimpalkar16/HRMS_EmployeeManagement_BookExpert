@@ -1,5 +1,5 @@
 import axios from "axios";
-import { type AttendanceSummary, type DailyAttendance } from "../components/attendance/types";
+import type { AttendanceSummary, DailyAttendance } from "../types/attendance";
 
 const API_BASE = "https://localhost:7264/api/Attendance";
 
